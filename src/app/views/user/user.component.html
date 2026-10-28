@@ -1,0 +1,175 @@
+<div class="w-100 p-0 m-0">
+    <c-card>
+        <!-- Header -->
+        <c-card-header class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">User List</h5>
+
+        </c-card-header>
+
+        <!-- Body -->
+        <c-card-body>
+            <p class="text-info">{{ message }}</p>
+
+            <!-- User Table -->
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>First</th>
+                        <th>Last</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <!-- Empty state -->
+                    <tr *ngIf="users.length === 0">
+                        <td colspan="9" class="text-center text-muted py-3">
+                            No users found.
+                        </td>
+                    </tr>
+
+                    <!-- Users -->
+                    <tr *ngFor="let u of users; let i = index" [class.table-danger]="!u.status">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ u.firstName }}</td>
+                        <td>{{ u.lastName }}</td>
+                        <td>{{ u.userName }}</td>
+                        <td>{{ u.email }}</td>
+                        <td>{{ u.phoneNumber }}</td>
+                        <td>{{ u.role }}</td>
+
+                        <td>
+                            <span [class.text-success]="u.status" [class.text-danger]="!u.status">
+                                {{ u.status ? 'Active' : 'Inactive' }}
+                            </span>
+                        </td>
+
+                        <td class="text-center">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-light dropdown-toggle" type="button"
+                                    id="dropdownMenuButton{{i}}" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end"
+                                    [attr.aria-labelledby]="'dropdownMenuButton' + i">
+                                    <li>
+                                        <a class="dropdown-item" (click)="openPermissionManager(u)">Manage
+                                            Permissions</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" (click)="openModalForEdit(u)">Edit User</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+
+
+                    </tr>
+                </tbody>
+            </table>
+        </c-card-body>
+    </c-card>
+
+    <!-- =====================
+       User Create / Edit Modal
+       ===================== -->
+    <app-modal [title]="isEditMode ? 'Edit User' : 'Register User'" [showModal]="showModal" (closeModal)="closeModal()">
+        <div modal-body>
+            <form (ngSubmit)="register()">
+                <div class="form-group mb-3">
+                    <label>First Name</label>
+                    <input class="form-control" [(ngModel)]="user.firstName" name="firstName" required />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Last Name</label>
+                    <input class="form-control" [(ngModel)]="user.lastName" name="lastName" required />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Username</label>
+                    <input class="form-control" [(ngModel)]="user.userName" name="userName" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Email</label>
+                    <input type="email" class="form-control" [(ngModel)]="user.email" name="email" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Phone Number</label>
+                    <input class="form-control" [(ngModel)]="user.phoneNumber" name="phoneNumber" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Role</label>
+                    <select class="form-control" [(ngModel)]="user.role" name="role" required (change)="onRoleChange()">
+                        <option value="" disabled>Select Role</option>
+                        <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+                    </select>
+                </div>
+
+                <!-- Category field (conditionally visible) -
+                <div class="form-group mb-3" *ngIf="user.role !== 'Director' && user.role !== 'Administrator'">
+                    <label>Category</label>
+                    <select class="form-control" [(ngModel)]="user.category" name="category">
+                        <option value="" disabled>Select Category</option>
+                        <option *ngFor="let cat of categories" [value]="cat">
+                            {{ cat }}
+                        </option>
+                    </select>
+                </div> -->
+
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="user.status" name="status"
+                        id="statusCheckbox" />
+                    <label class="form-check-label" for="statusCheckbox">
+                        {{ user.status ? 'Active' : 'Inactive' }}
+                    </label>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <button type="button" class="btn btn-secondary me-2" (click)="closeModal()">
+                        Cancel
+                    </button>
+                    <button class="btn btn-success" type="submit">
+                        {{ isEditMode ? 'Update' : 'Register' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </app-modal>
+
+    <!-- =====================
+       Permission Modal
+       ===================== -->
+    <!-- <app-modal [title]="'Manage Permissions for ' + (selectedUser?.userName || '')" [showModal]="showPermissionModal"
+        (closeModal)="closePermissionModal()">
+        <div modal-body>
+            <div class="form-group">
+                <label class="fw-bold">Permissions</label>
+                <div *ngFor="let perm of availablePermissions" class="form-check">
+                    <input type="checkbox" class="form-check-input"
+                        [checked]="rolePermissions.includes(perm) || userPermissions.includes(perm)"
+                        [disabled]="rolePermissions.includes(perm)" (change)="togglePermission(perm)"
+                        id="perm-modal-{{ perm }}" />
+                    <label class="form-check-label" [for]="'perm-modal-' + perm">
+                        {{ perm }}
+                    </label>
+                </div>
+            </div>
+
+            <div class="mt-4 text-end">
+                <button type="button" class="btn btn-secondary" (click)="closePermissionModal()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </app-modal> -->
+    <!-- </div> -->

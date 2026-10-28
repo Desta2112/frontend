@@ -1,0 +1,45 @@
+/* Sidebar header */
+.sidebar-header-blueblack {
+  background: linear-gradient(135deg, #0f172a, #020617);
+  color: #bebcd3;
+}
+
+/* Main header */
+.main-header {
+  background: linear-gradient(90deg, #0f172a, #020617);
+  color: #ffffff;
+  border-bottom: 1px solid #1e293b;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Header links and icons */
+.main-header a,
+.main-header button,
+.main-header svg[cIcon] {
+  color: #cbd5f5;
+}
+
+.main-header a:hover,
+.main-header button:hover {
+  color: #3b82f6;
+}
+
+/* Body / page content */
+.main-body {
+  background-color: #0f172a;
+  color: #e5e7eb;
+  min-height: calc(100vh - 60px);
+}
+
+/* Footer */
+.main-footer {
+  background-color: #020617;
+  color: #cbd5f5;
+  border-top: 1px solid #1e293b;
+}
+
+/* Sidebar scrollbar */
+.sidebar-scroll {
+  --scrollbar-thumb-color: #3b82f6;
+  --scrollbar-track-color: #020617;
+}

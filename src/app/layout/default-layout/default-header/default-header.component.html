@@ -1,0 +1,124 @@
+<ng-container>
+  <c-container [fluid]="true" class="border-bottom px-4">
+    <button [cSidebarToggle]="sidebarId" cHeaderToggler class="btn text-body" toggle="visible"
+      style="margin-inline-start: -14px" aria-label="Toggle sidebar navigation">
+      <svg cIcon name="cilMenu" size="lg"></svg>
+    </button>
+
+    <c-header-nav class="d-none d-md-flex">
+      <c-nav-item>
+        <a cNavLink routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+      </c-nav-item>
+    </c-header-nav>
+
+    <!-- Centered Title -->
+    <div class="flex-grow-1 text-center">
+      <h4 class="mb-0 fw-bold text-primary" style="letter-spacing: 1px">
+        Welcome to SMs Platform
+      </h4>
+    </div>
+
+    <c-header-nav class="d-none d-md-flex ms-auto">
+      <a cNavLink class="text-body">
+        <svg cIcon class="my-1" name="cilBell" size="lg"></svg>
+      </a>
+      <a cNavLink class="text-body">
+        <svg cIcon class="my-1" name="cilList" size="lg"></svg>
+      </a>
+      <a cNavLink class="text-body">
+        <svg cIcon class="my-1" name="cilEnvelopeOpen" size="lg"></svg>
+      </a>
+    </c-header-nav>
+
+    <c-header-nav class="ms-auto ms-md-0">
+      <div class="nav-item py-1">
+        <div class="vr h-100 mx-2 text-body text-opacity-75"></div>
+      </div>
+      <ng-container *ngTemplateOutlet="themeDropdown"></ng-container>
+      <div class="nav-item py-1">
+        <div class="vr h-100 mx-2 text-body text-opacity-75"></div>
+      </div>
+    </c-header-nav>
+
+    <c-header-nav class="mx-0">
+      <ng-container *ngTemplateOutlet="userDropdown"></ng-container>
+    </c-header-nav>
+  </c-container>
+
+  <c-container [fluid]="true" class="px-4">
+    <c-breadcrumb-router></c-breadcrumb-router>
+  </c-container>
+</ng-container>
+
+<!-- User dropdown -->
+<ng-template #userDropdown>
+  <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
+    <button [caret]="false" cDropdownToggle class="py-0 pe-0 text-body" aria-label="Open user menu">
+      <c-avatar shape="rounded-1" [size]="'md'" src="./assets/images/image.png" status="success"
+        alt="User avatar"></c-avatar>
+      <span class="ms-2 fw-semibold text-body">
+        {{ user?.firstName }} {{ user?.lastName || "" }}
+      </span>
+    </button>
+    <ul cDropdownMenu class="pt-0 w-auto">
+      <li>
+        <h6 cDropdownHeader class="bg-body-secondary text-body-secondary fw-semibold py-2 rounded-top">
+          Account
+        </h6>
+      </li>
+      <li>
+        <a cDropdownItem (click)="openChangePasswordModal(user)" style="cursor: pointer">
+          <svg cIcon name="cilLockLocked" class="me-2"></svg>
+          Change Password
+        </a>
+      </li>
+      <li>
+        <a cDropdownItem (click)="logout()" style="cursor: pointer">
+          <svg cIcon class="me-2" name="cilAccountLogout"></svg>
+          Logout
+        </a>
+      </li>
+    </ul>
+  </c-dropdown>
+
+  <!-- Change Password Modal -->
+  <app-modal [title]="'Change Password'" [showModal]="showChangePasswordModal"
+    (closeModal)="closeChangePasswordModal()">
+    <div modal-body>
+      <form (ngSubmit)="changePassword()">
+        <div class="mb-3">
+          <label class="form-label">Current Password</label>
+          <input type="password" class="form-control" [(ngModel)]="passwordForm.currentPassword"
+            name="currentPassword" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">New Password</label>
+          <input type="password" class="form-control" [(ngModel)]="passwordForm.newPassword" name="newPassword"
+            required />
+        </div>
+        <div class="mt-4 text-end">
+          <button type="button" class="btn btn-secondary me-2" (click)="closeChangePasswordModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">Change</button>
+        </div>
+      </form>
+    </div>
+  </app-modal>
+</ng-template>
+
+<!-- Theme dropdown -->
+<ng-template #themeDropdown>
+  <c-dropdown alignment="end" variant="nav-item">
+    <button [caret]="false" cDropdownToggle class="text-body" aria-label="Open theme picker">
+      <svg cIcon [name]="icons()" size="lg"></svg>
+    </button>
+    <div cDropdownMenu>
+      <button *ngFor="let mode of colorModes" (click)="colorMode.set(mode.name)"
+        [active]="colorMode() === mode.name" cDropdownItem class="d-flex align-items-center">
+        <svg cIcon class="me-2" [name]="mode.icon" size="lg"></svg>
+        {{ mode.text }}
+      </button>
+    </div>
+  </c-dropdown>
+</ng-template>

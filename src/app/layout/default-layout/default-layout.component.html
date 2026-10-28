@@ -1,0 +1,53 @@
+<!-- ===================== SIDEBAR ===================== -->
+<c-sidebar
+  #sidebar1="cSidebar"
+  id="sidebar1"
+  class="sidebar sidebar-fixed lms-sidebar"
+  colorScheme="dark"
+  visible
+>
+  <c-sidebar-header class="lms-sidebar-header">
+    <a routerLink="/" class="lms-brand" [attr.aria-label]="appName">
+      <svg class="lms-brand-mark" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">
+        <rect width="32" height="32" rx="9" fill="#6366f1" />
+        <path d="M16 8 6 13l10 5 10-5-10-5Z" fill="#fff" />
+        <path d="M10 16.5v4.2c0 1.4 2.7 3.3 6 3.3s6-1.9 6-3.3v-4.2L16 20l-6-3.5Z" fill="#14b8a6" />
+      </svg>
+      <span class="lms-brand-text sidebar-brand-full">
+        <strong>{{ appName }}</strong>
+        <small>{{ tagline }}</small>
+      </span>
+    </a>
+  </c-sidebar-header>
+
+  <ng-scrollbar visibility="hover" pointerEventsMethod="scrollbar" class="sidebar-scroll">
+    <c-sidebar-nav class="sidebar-nav" [navItems]="navItems" dropdownMode="close"></c-sidebar-nav>
+  </ng-scrollbar>
+
+  @if (!sidebar1.narrow) {
+    <c-sidebar-footer
+      cSidebarToggle="sidebar1"
+      toggle="unfoldable"
+      class="lms-sidebar-footer d-none d-lg-flex justify-content-center"
+    >
+      <button cSidebarToggler aria-label="Collapse sidebar"></button>
+    </c-sidebar-footer>
+  }
+</c-sidebar>
+
+<!-- ===================== MAIN AREA ===================== -->
+<div class="wrapper d-flex flex-column min-vh-100">
+  <app-default-header
+    class="header header-sticky p-0 lms-header"
+    position="sticky"
+    sidebarId="sidebar1"
+  ></app-default-header>
+
+  <main class="body flex-grow-1 main-body">
+    <c-container breakpoint="lg" class="px-4 pt-4 pb-5">
+      <router-outlet></router-outlet>
+    </c-container>
+  </main>
+
+  <app-default-footer class="main-footer small text-center py-2"></app-default-footer>
+</div>

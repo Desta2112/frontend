@@ -1,0 +1,225 @@
+/* =====================================================
+   Online Learning Platform: layout theme
+   Requires ViewEncapsulation.None (set in the .ts file)
+   because CoreUI renders the nav links in child components.
+
+   Optional font: add to src/index.html <head>
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+   ===================================================== */
+
+/* ---------- Palette tokens ---------- */
+app-dashboard {
+  --lms-sidebar: #1e1b4b;
+  --lms-sidebar-dark: #17153b;
+  --lms-sidebar-text: #c7c9e8;
+  --lms-primary: #6366f1;
+  --lms-primary-soft: rgba(99, 102, 241, 0.12);
+  --lms-accent: #14b8a6;
+  --lms-highlight: #f59e0b;
+  --lms-body: #f5f7fb;
+  --lms-body-end: #eceff8;
+  --lms-surface: #ffffff;
+  --lms-border: #e5e7eb;
+  --lms-text: #1f2937;
+  --lms-muted: #6b7280;
+
+  font-family: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--lms-text);
+}
+
+/* ---------- Sidebar ---------- */
+app-dashboard .lms-sidebar {
+  --cui-sidebar-bg: var(--lms-sidebar);
+  --cui-sidebar-header-bg: var(--lms-sidebar-dark);
+  --cui-sidebar-footer-bg: var(--lms-sidebar-dark);
+  --cui-sidebar-border-color: rgba(255, 255, 255, 0.06);
+  --cui-sidebar-nav-title-color: #8b8fc4;
+  --cui-sidebar-nav-link-color: var(--lms-sidebar-text);
+  --cui-sidebar-nav-link-icon-color: #9a9ed6;
+  --cui-sidebar-nav-link-hover-color: #fff;
+  --cui-sidebar-nav-link-hover-bg: rgba(255, 255, 255, 0.08);
+  --cui-sidebar-nav-link-hover-icon-color: #fff;
+  --cui-sidebar-nav-link-active-color: #fff;
+  --cui-sidebar-nav-link-active-bg: var(--lms-primary);
+  --cui-sidebar-nav-link-active-icon-color: #fff;
+  --cui-sidebar-nav-group-bg: rgba(0, 0, 0, 0.18);
+  --cui-sidebar-toggler-bg: rgba(255, 255, 255, 0.04);
+}
+
+app-dashboard .lms-sidebar .sidebar-scroll,
+app-dashboard .lms-sidebar .sidebar-nav {
+  background-color: transparent;
+}
+
+/* Brand */
+app-dashboard .lms-sidebar-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+app-dashboard .lms-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #fff;
+  text-decoration: none;
+}
+
+app-dashboard .lms-brand-mark {
+  flex: none;
+}
+
+app-dashboard .lms-brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+
+  strong {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  small {
+    font-size: 0.75rem;
+    color: #9a9ed6;
+  }
+}
+
+/* Links */
+app-dashboard .lms-sidebar .nav-link {
+  margin: 3px 12px;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.925rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  &.active {
+    font-weight: 600;
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--lms-accent);
+    outline-offset: 2px;
+  }
+}
+
+app-dashboard .lms-sidebar .nav-group-items .nav-link {
+  margin-left: 24px;
+  font-weight: 400;
+}
+
+app-dashboard .lms-sidebar-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+}
+
+/* ---------- Header ---------- */
+app-dashboard .lms-header {
+  background: var(--lms-surface);
+  border-bottom: 1px solid var(--lms-border);
+  box-shadow: 0 1px 8px rgba(30, 27, 75, 0.05);
+}
+
+/* ---------- Body ---------- */
+app-dashboard .wrapper {
+  background: var(--lms-body);
+}
+
+app-dashboard .main-body {
+  background: linear-gradient(180deg, var(--lms-body) 0%, var(--lms-body-end) 100%);
+  padding-inline: 1rem;
+  color: var(--lms-text);
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--lms-text);
+    font-weight: 700;
+  }
+
+  .text-muted {
+    color: var(--lms-muted) !important;
+  }
+}
+
+/* ---------- Footer ---------- */
+app-dashboard .main-footer {
+  background: var(--lms-surface);
+  border-top: 1px solid var(--lms-border);
+  color: var(--lms-muted);
+
+  a {
+    color: var(--lms-primary);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+/* ---------- Reusable learning components ---------- */
+app-dashboard {
+  .card {
+    --cui-card-bg: var(--lms-surface);
+    --cui-card-border-color: var(--lms-border);
+    --cui-card-border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(30, 27, 75, 0.06);
+  }
+
+  .btn-primary {
+    --cui-btn-bg: var(--lms-primary);
+    --cui-btn-border-color: var(--lms-primary);
+    --cui-btn-hover-bg: #4f46e5;
+    --cui-btn-hover-border-color: #4f46e5;
+    --cui-btn-active-bg: #4338ca;
+    --cui-btn-active-border-color: #4338ca;
+  }
+
+  a:not(.btn):not(.nav-link) {
+    color: var(--lms-primary);
+  }
+
+  /* Progress and completion */
+  .progress-bar,
+  .lms-progress {
+    background-color: var(--lms-accent);
+  }
+
+  .lms-complete {
+    color: var(--lms-accent);
+  }
+
+  /* Streaks, badges, "continue learning" prompts */
+  .lms-streak {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    background: var(--lms-highlight);
+    color: var(--lms-text);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .lms-tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    background: var(--lms-primary-soft);
+    color: var(--lms-primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+}
+
+/* ---------- Motion preferences ---------- */
+@media (prefers-reduced-motion: reduce) {
+  app-dashboard * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

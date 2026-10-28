@@ -1,0 +1,31 @@
+.footer-modern {
+  background-color: #afc6dd;
+  font-size: 0.9rem;
+}
+
+.footer-logo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #292721;
+}
+
+.footer-links a {
+  color: #6c757d;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #0d6efd;
+  text-decoration: underline;
+}
+
+.footer-brand-link {
+  font-weight: 600;
+  color: #0d6efd;
+  text-decoration: none;
+}
+
+.footer-brand-link:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,253 @@
+<section class="dash">
+  <!-- ============ Header ============ -->
+  <header class="dash-head">
+    <div>
+      <h2 class="dash-title">{{ greeting }}, {{ studentName }}</h2>
+      <p class="dash-sub">{{ today }}. {{ dueThisWeek }} items are due this week.</p>
+    </div>
+    <span class="streak-pill">{{ streakDays }}-day learning streak</span>
+  </header>
+
+  <!-- ============ Continue learning + weekly goal ============ -->
+  <div class="row g-4 mb-4">
+    <div class="col-xl-8">
+      <article class="hero">
+        <div class="hero-main">
+          <p class="hero-kicker">Pick up where you left off</p>
+          <h3 class="hero-title">{{ current.title }}</h3>
+          <p class="hero-lesson">Lesson {{ current.lessonNo }}: {{ current.lesson }}</p>
+
+          <div class="hero-progress" role="progressbar" [attr.aria-valuenow]="current.progress"
+            aria-valuemin="0" aria-valuemax="100" aria-label="Course progress">
+            <div class="bar"><span [style.width.%]="current.progress"></span></div>
+            <strong>{{ current.progress }}%</strong>
+          </div>
+          <p class="hero-note">
+            {{ current.done }} of {{ current.total }} lessons complete, about {{ current.minutesLeft }} minutes left
+          </p>
+
+          <button type="button" class="btn-resume" (click)="resumeCourse()">
+            <svg class="icon icon-sm icon-fill" viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="icons.play" /></svg>
+            Resume lesson
+          </button>
+        </div>
+
+        <div class="hero-next">
+          <h4 class="hero-next-title">Up next in this course</h4>
+          <ol class="next-list">
+            @for (item of current.upNext; track item.title) {
+              <li [class.is-now]="item.now">
+                <span class="dot"></span>
+                <span class="next-text">
+                  <span class="next-name">{{ item.title }}</span>
+                  <span class="next-len">{{ item.minutes }} min</span>
+                </span>
+              </li>
+            }
+          </ol>
+        </div>
+      </article>
+    </div>
+
+    <div class="col-xl-4">
+      <article class="panel goal">
+        <h3 class="panel-title">Weekly study goal</h3>
+        <div class="goal-body">
+          <div class="goal-ring" [style.--pct]="goalPercent()" role="img"
+            [attr.aria-label]="goalPercent() + ' percent of weekly goal reached'">
+            <div class="goal-ring-text">
+              <strong>{{ goalPercent() }}%</strong>
+              <span>of goal</span>
+            </div>
+          </div>
+          <div class="goal-meta">
+            <p class="goal-hours">{{ studiedLabel() }}</p>
+            <p class="goal-target">of {{ goalLabel }} this week</p>
+          </div>
+        </div>
+
+        <div class="week" aria-label="Days studied this week">
+          @for (d of weekDays; track d.label) {
+            <span class="week-day" [class.is-done]="d.done" [class.is-today]="d.today">
+              {{ d.label }}
+            </span>
+          }
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- ============ KPI cards ============ -->
+  <div class="row g-4 mb-4">
+    @for (k of kpis; track k.label) {
+      <div class="col-sm-6 col-xl-3">
+        <article class="panel kpi">
+          <span class="kpi-icon" [attr.data-tone]="k.tone">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="k.icon" /></svg>
+          </span>
+          <div>
+            <p class="kpi-value">{{ k.value }}</p>
+            <p class="kpi-label">{{ k.label }}</p>
+            <p class="kpi-note">{{ k.note }}</p>
+          </div>
+        </article>
+      </div>
+    }
+  </div>
+
+  <!-- ============ Charts ============ -->
+  <div class="row g-4 mb-4">
+    <div class="col-xl-8">
+      <article class="panel h-100">
+        <div class="panel-head">
+          <div>
+            <h3 class="panel-title">Asked Questions</h3>
+            <p class="panel-sub">Questions posted across all courses</p>
+          </div>
+          <div class="segmented" role="group" aria-label="Chart period">
+            @for (p of periods; track p) {
+              <button type="button" [class.is-active]="period() === p" [attr.aria-pressed]="period() === p"
+                (click)="setTrafficPeriod(p)">
+                {{ p }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          @if (loading()) {
+            <div class="chart-loading">Loading chart…</div>
+          }
+          <c-chart type="line" [data]="mainChart.data" [options]="mainChart.options" style="height: 300px"></c-chart>
+        </div>
+      </article>
+    </div>
+
+    <div class="col-xl-4">
+      <article class="panel h-100">
+        <h3 class="panel-title">Study time by subject</h3>
+        <p class="panel-sub">Last 30 days</p>
+
+        <div class="donut-wrap">
+          <c-chart type="doughnut" [data]="subjectChart.data" [options]="subjectChart.options"
+            style="height: 190px"></c-chart>
+        </div>
+
+        <ul class="legend">
+          @for (s of subjects; track s.name) {
+            <li>
+              <span class="swatch" [style.background]="s.color"></span>
+              <span class="legend-name">{{ s.name }}</span>
+              <span class="legend-val">{{ s.hours }}h</span>
+            </li>
+          }
+        </ul>
+      </article>
+    </div>
+  </div>
+
+  <!-- ============ Courses + deadlines ============ -->
+  <div class="row g-4 mb-4">
+    <div class="col-xl-8">
+      <article class="panel h-100">
+        <div class="panel-head">
+          <h3 class="panel-title">My courses</h3>
+          <div class="segmented" role="group" aria-label="Filter courses">
+            @for (f of courseFilters; track f.value) {
+              <button type="button" [class.is-active]="courseFilter() === f.value"
+                [attr.aria-pressed]="courseFilter() === f.value" (click)="courseFilter.set(f.value)">
+                {{ f.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <ul class="course-list">
+          @for (c of filteredCourses(); track c.id) {
+            <li class="course">
+              <span class="course-tile" [style.--tone]="c.color">{{ c.initials }}</span>
+              <div class="course-info">
+                <p class="course-name">{{ c.title }}</p>
+                <p class="course-meta">{{ c.instructor }}, {{ c.lessonsDone }} of {{ c.lessonsTotal }} lessons</p>
+              </div>
+              <div class="course-progress">
+                <div class="bar"><span [style.width.%]="c.progress" [class.is-complete]="c.progress === 100"></span></div>
+                <strong>{{ c.progress }}%</strong>
+              </div>
+              <button type="button" class="btn-ghost">
+                {{ c.progress === 100 ? 'Review' : 'Continue' }}
+              </button>
+            </li>
+          } @empty {
+            <li class="empty">No courses here yet. Browse the catalog to enroll in your first one.</li>
+          }
+        </ul>
+      </article>
+    </div>
+
+    <div class="col-xl-4">
+      <article class="panel h-100">
+        <h3 class="panel-title">Upcoming</h3>
+        <p class="panel-sub">Deadlines and live classes</p>
+
+        <ul class="due-list">
+          @for (d of deadlines; track d.title) {
+            <li class="due">
+              <span class="due-date" [attr.data-kind]="d.kind">
+                <strong>{{ d.day }}</strong>
+                <span>{{ d.month }}</span>
+              </span>
+              <div class="due-info">
+                <p class="due-name">{{ d.title }}</p>
+                <p class="due-meta">{{ d.course }}, {{ d.time }}</p>
+              </div>
+              <span class="kind-tag" [attr.data-kind]="d.kind">{{ d.kindLabel }}</span>
+            </li>
+          }
+        </ul>
+      </article>
+    </div>
+  </div>
+
+  <!-- ============ Leaderboard + achievements ============ -->
+  <div class="row g-4">
+    <div class="col-xl-6">
+      <article class="panel h-100">
+        <h3 class="panel-title">Top learners this week</h3>
+        <p class="panel-sub">Ranked by points earned</p>
+
+        <ol class="board">
+          @for (l of leaderboard; track l.name; let i = $index) {
+            <li [class.is-you]="l.you">
+              <span class="rank">{{ i + 1 }}</span>
+              <span class="avatar" [style.--tone]="l.color">{{ l.initials }}</span>
+              <span class="board-name">{{ l.name }}@if (l.you) { <em>(you)</em> }</span>
+              <span class="board-pts">{{ l.points }} pts</span>
+            </li>
+          }
+        </ol>
+      </article>
+    </div>
+
+    <div class="col-xl-6">
+      <article class="panel h-100">
+        <h3 class="panel-title">Achievements</h3>
+        <p class="panel-sub">{{ unlockedCount }} of {{ achievements.length }} unlocked</p>
+
+        <ul class="badges">
+          @for (a of achievements; track a.title) {
+            <li class="badge-card" [class.is-locked]="!a.unlocked">
+              <span class="badge-icon" [attr.data-tone]="a.tone">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="a.icon" /></svg>
+              </span>
+              <div>
+                <p class="badge-name">{{ a.title }}</p>
+                <p class="badge-desc">{{ a.description }}</p>
+              </div>
+            </li>
+          }
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>

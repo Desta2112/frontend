@@ -1,0 +1,261 @@
+<h2 class="text-center my-4">Course List</h2>
+
+<div class="text-end mb-3">
+    <button cButton color="success" *ngIf="authService.hasPermission('AddCourse')" (click)="openModal()">
+        <i class="cil-plus"></i> Add Course
+    </button>
+
+</div>
+
+<c-card>
+    <c-card-header><strong>Courses</strong></c-card-header>
+    <c-card-body>
+        <table class="table table-striped table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Course Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let course of courses; let i = index">
+                    <tr>
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ course.courseName }}</td>
+                        <td>{{ course.description }}</td>
+                        <td>{{ course.price | currency:'USD' }}</td>
+                        <td class="text-center">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    ...
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" (click)="toggleTitles(course)"
+                                            [class.disabled]="courseRequestStatus[course.courseId] !== 'Approved'"
+                                            [attr.aria-disabled]="courseRequestStatus[course.courseId] !== 'Approved'">
+                                            <i class="cil-list"></i> GetStarted
+                                        </a>
+                                    </li>
+                                    <li *ngIf="authService.hasPermission('AddTitle')">
+                                        <a class="dropdown-item" (click)="openAddTitleModal(course)">
+                                            <i class="cil-plus"></i> Add Title
+                                        </a>
+                                    </li>
+
+                                    <li *ngIf="authService.hasPermission('editCourse')">
+                                        <a class="dropdown-item" (click)="editCourse(course)">
+                                            <i class="cil-pencil"></i> Edit
+                                        </a>
+                                    </li>
+
+                                    <li *ngIf="authService.hasPermission('deleteCourse')">
+                                        <a class="dropdown-item" (click)="deleteCourse(course.courseId)">
+                                            <i class="cil-trash"></i> Delete
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" (click)="openApplyModal(course)">
+                                            <i class="cil-check"></i> Apply
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Titles Table -->
+                    <tr *ngIf="course.showTitles">
+                        <td colspan="5">
+                            <table class="table table-bordered table-sm">
+                                <thead class="table-secondary">
+                                    <tr>
+                                        <th>Title Name</th>
+                                        <th>Materials</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let t of course.courseTitles">
+                                        <td>{{ t.titleName }}</td>
+                                        <td>
+                                            <table *ngIf="t.materials?.length > 0; else noMaterials"
+                                                class="table table-sm border">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Material Name</th>
+                                                        <th class="text-center">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let m of t.materials">
+                                                        <td>{{ m.fileName }}</td>
+                                                        <td class="text-center">
+                                                            <div class="dropdown">
+                                                                <button class="btn btn-sm btn-info dropdown-toggle"
+                                                                    type="button" data-bs-toggle="dropdown"
+                                                                    aria-expanded="false">
+                                                                    ...
+                                                                </button>
+                                                                <ul class="dropdown-menu">
+                                                                    <li *ngIf="m.type?.includes('pdf')">
+                                                                        <a class="dropdown-item"
+                                                                            (click)="openPreview(m)">
+                                                                            <i class="cil-file"></i> Preview PDF
+                                                                        </a>
+                                                                    </li>
+                                                                    <li *ngIf="m.type?.includes('video')">
+                                                                        <a class="dropdown-item"
+                                                                            (click)="openPreview(m)">
+                                                                            <i class="cil-play-circle"></i> Preview
+                                                                            Video
+                                                                        </a>
+                                                                    </li>
+                                                                    <li *ngIf="m.type?.includes('image')">
+                                                                        <a class="dropdown-item"
+                                                                            (click)="openPreview(m)">
+                                                                            <i class="cil-image"></i> Preview Image
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="dropdown-item"
+                                                                            (click)="downloadMaterial(m)">
+                                                                            <i class="cil-cloud-download"></i> Download
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a class="dropdown-item"
+                                                                            (click)="deleteMaterial(t, m)">
+                                                                            <i class="cil-trash"></i> Delete
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <ng-template #noMaterials>
+                                                <span class="text-muted">No materials added.</span>
+                                            </ng-template>
+                                        </td>
+                                        <td class="text-center">
+                                            <button cButton color="primary" size="sm"
+                                                *ngIf="authService.hasPermission('AddMaterial')"
+                                                (click)="openAddMaterialModal(t)">
+                                                Add Material
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </c-card-body>
+</c-card>
+
+<!-- ====================== MODALS ====================== -->
+
+<!-- Add/Edit Course Modal -->
+<c-modal [visible]="showModal" (close)="closeModal()">
+    <c-modal-header>
+        <h5>{{ editingCourse ? 'Edit Course' : 'Add Course' }}</h5>
+    </c-modal-header>
+    <c-modal-body>
+        <input class="form-control mb-2" placeholder="Course Name" [(ngModel)]="newCourse.courseName" />
+        <textarea class="form-control mb-2" placeholder="Description" [(ngModel)]="newCourse.description"></textarea>
+        <input type="number" class="form-control mb-2" placeholder="Price" [(ngModel)]="newCourse.price" />
+    </c-modal-body>
+    <c-modal-footer>
+        <button cButton color="primary" (click)="editingCourse ? updateCourse() : addCourse()">
+            {{ editingCourse ? 'Update' : 'Save' }}
+        </button>
+        <button cButton color="secondary" (click)="closeModal()">Cancel</button>
+    </c-modal-footer>
+</c-modal>
+
+<!-- Apply Course Modal -->
+<c-modal [visible]="showApplyModal" (close)="showApplyModal = false">
+    <c-modal-header>
+        <h5>Apply for {{ selectedCourse?.courseName }}</h5>
+    </c-modal-header>
+    <c-modal-body>
+        <p>Bank Name: CBE</p>
+        <p>Account No: 100023456789</p>
+        <p>Account Owner: {{ authService.getUser()?.userName }}</p>
+        <label>Upload Receipt</label>
+        <input type="file" class="form-control" (change)="onReceiptSelected($event)">
+    </c-modal-body>
+    <c-modal-footer>
+        <button cButton color="primary" (click)="applyCourse()" [disabled]="!receiptFile">Submit</button>
+        <button cButton color="secondary" (click)="showApplyModal = false">Cancel</button>
+    </c-modal-footer>
+</c-modal>
+
+<!-- Add Title Modal -->
+<c-modal [visible]="showTitleModal" (close)="closeAddTitleModal()">
+    <c-modal-header>
+        <h5>Add Title to {{ selectedCourse?.courseName }}</h5>
+    </c-modal-header>
+    <c-modal-body>
+        <input class="form-control" placeholder="Title Name" [(ngModel)]="newCourseTitle.titleName" />
+    </c-modal-body>
+    <c-modal-footer>
+        <button cButton color="primary" (click)="addCourseTitle()">Add</button>
+        <button cButton color="secondary" (click)="closeAddTitleModal()">Cancel</button>
+    </c-modal-footer>
+</c-modal>
+
+<!-- Add Material Modal -->
+<c-modal [visible]="showMaterialModal" (close)="closeAddMaterialModal()">
+    <c-modal-header>
+        <h5>Add Material to {{ selectedTitle?.titleName }}</h5>
+    </c-modal-header>
+    <c-modal-body>
+        <input type="file" class="form-control mb-2" (change)="onFileSelected($event)" />
+        <input type="text" class="form-control mb-2" placeholder="Material Name" [(ngModel)]="newMaterial.fileName" />
+    </c-modal-body>
+    <c-modal-footer>
+        <button cButton color="primary" [disabled]="!selectedFile" (click)="uploadMaterial()">Upload</button>
+        <button cButton color="secondary" (click)="closeAddMaterialModal()">Cancel</button>
+    </c-modal-footer>
+</c-modal>
+
+<!-- Preview Material Modal -->
+<c-modal [visible]="previewFile" (close)="closePreview()" size="xl">
+    <c-modal-header>
+        <h5>Preview: {{ previewFile?.fileName }}</h5>
+    </c-modal-header>
+    <c-modal-body style="max-height: 80vh; overflow-y: auto;">
+        <!-- PDF Preview -->
+        <iframe *ngIf="previewFile && previewFile.type?.includes('pdf')" [src]="getSafeUrl(previewFile.fileUrl)"
+            width="100%" height="600px" style="border:none;"></iframe>
+
+        <!-- Video Preview -->
+        <video *ngIf="previewFile && previewFile.type?.includes('video')" [src]="previewFile.fileUrl" controls
+            width="100%"></video>
+
+        <!-- Image Preview -->
+        <img *ngIf="previewFile && previewFile.type?.includes('image')" [src]="previewFile.fileUrl"
+            style="max-width:100%; height:auto;" />
+
+        <!-- Unsupported Preview -->
+        <div *ngIf="previewFile && isUnsupportedPreview(previewFile)">
+            <p>Cannot preview this file type.
+                <a [href]="previewFile.fileUrl" target="_blank">Download</a>
+            </p>
+        </div>
+    </c-modal-body>
+    <c-modal-footer>
+        <button cButton color="secondary" (click)="closePreview()">Close</button>
+    </c-modal-footer>
+</c-modal>

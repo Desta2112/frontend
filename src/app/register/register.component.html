@@ -1,0 +1,37 @@
+<div class="min-vh-100 d-flex align-items-center justify-content-center">
+    <c-card style="width:500px">
+        <c-card-body>
+
+            <h3 class="text-center mb-4">Register</h3>
+
+            <form (ngSubmit)="register()" #f="ngForm">
+
+                <input class="form-control mb-2" name="userName" [(ngModel)]="model.userName" placeholder="Username"
+                    required />
+
+                <input class="form-control mb-2" name="email" [(ngModel)]="model.email" placeholder="Email" required />
+
+                <input class="form-control mb-2" name="firstName" [(ngModel)]="model.firstName" placeholder="First Name"
+                    required />
+
+                <input class="form-control mb-2" name="lastName" [(ngModel)]="model.lastName" placeholder="Last Name"
+                    required />
+
+                <input class="form-control mb-2" name="phoneNumber" [(ngModel)]="model.phoneNumber"
+                    placeholder="Phone Number" />
+
+                <input class="form-control mb-2" type="password" name="password" [(ngModel)]="model.password"
+                    placeholder="Password" required />
+
+                <!-- Role: USER only -->
+                <input type="hidden" [(ngModel)]="model.role" name="role" />
+
+                <button type="submit" class="btn btn-primary w-100 mt-3">
+                    Register
+                </button>
+
+            </form>
+
+        </c-card-body>
+    </c-card>
+</div>

@@ -1,0 +1,112 @@
+<div class="page">
+
+    <!-- Top Bar: Ask Button + Search -->
+    <div class="top-bar">
+        <div class="ask-btn-container" *ngIf="authService.isAuthenticated()">
+            <button class="ask-btn" (click)="openAddModal()">✎ Ask Question</button>
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search by tag..." [(ngModel)]="searchTag"
+                (ngModelChange)="filterQuestions()">
+            <button class="search-btn" (click)="filterQuestions()" aria-label="Search">🔍</button>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!pagedQuestions?.length">
+        No questions found.
+    </div>
+
+    <!-- Question Cards -->
+    <div class="question-card" *ngFor="let q of pagedQuestions; let i = index" [class.expanded]="openedIndex === i">
+        <div class="question-header" (click)="toggle(i)">
+            <span class="tag-header">{{ q.tag }}</span>
+            <span class="arrow" [class.open]="openedIndex === i">▼</span>
+        </div>
+
+        <div class="question-body" *ngIf="openedIndex === i">
+            <p class="description">{{ q.descriptin }}</p>
+
+            <div class="meta-row">
+                <div class="user-box">
+                    <div class="avatar">{{ q.firstName.charAt(0) }}{{ q.lastName.charAt(0) }}</div>
+                    <div class="user-name">{{ q.firstName }} {{ q.lastName }}</div>
+                </div>
+                <span class="date">Posted on {{ q.createdAt | date: 'medium' }}</span>
+            </div>
+
+            <div class="btn-group">
+                <button class="ans-btn" *ngIf="authService.isAuthenticated()"
+                    (click)="openAddAnswerModal(q); $event.stopPropagation()">
+                    ➕ Add Answer
+                </button>
+
+                <span class="spacer"></span>
+
+                <button class="edit-btn" *ngIf="authService.hasPermission('editQuestion')"
+                    (click)="editQuestion(q); $event.stopPropagation()">
+                    ✎ Edit
+                </button>
+
+                <button class="delete-btn" *ngIf="authService.hasPermission('deleteQuestion')"
+                    (click)="deleteQuestion(q); $event.stopPropagation()">
+                    🗑 Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination" *ngIf="totalPages > 1">
+        <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">← Previous</button>
+        <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+        <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">Next →</button>
+    </div>
+</div>
+
+<!-- Add Question Modal -->
+<div class="modal" *ngIf="isAddModalOpen" (click)="closeAddModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <h3>Add Question</h3>
+        <input type="text" placeholder="Tag" [(ngModel)]="addData.tag">
+        <textarea rows="4" placeholder="Description" [(ngModel)]="addData.descriptin"></textarea>
+        <p class="date">Posted on: {{ addData.createdAt | date: 'medium' }}</p>
+        <div class="current-user">Asking as: <strong>{{ authService.getUser()?.firstName }} {{
+                authService.getUser()?.lastName }}</strong></div>
+        <div class="modal-actions">
+            <button class="modal-btn cancel-btn" (click)="closeAddModal()">Cancel</button>
+            <button class="modal-btn save-btn" (click)="addQuestion()">Submit</button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Question Modal -->
+<div class="modal" *ngIf="isEditModalOpen" (click)="closeEditModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <h3>Edit Question</h3>
+        <input type="text" placeholder="Tag" [(ngModel)]="editData.tag">
+        <textarea rows="4" placeholder="Description" [(ngModel)]="editData.descriptin"></textarea>
+        <p class="date">Posted on: {{ editData.createdAt | date: 'medium' }}</p>
+        <div class="current-user">Asked by: <strong>{{ editData.firstName }} {{ editData.lastName }}</strong></div>
+        <div class="modal-actions">
+            <button class="modal-btn cancel-btn" (click)="closeEditModal()">Cancel</button>
+            <button class="modal-btn save-btn" (click)="updateQuestion()">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Answer Modal -->
+<div class="modal" *ngIf="isAddAnswerModalOpen" (click)="closeAddAnswerModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <h3>Write an Answer</h3>
+        <div class="quoted-question"><strong>Question:</strong> {{ selectedQuestion?.descriptin }}</div>
+        <textarea rows="4" placeholder="Your answer..." [(ngModel)]="answerData.answerText"></textarea>
+        <div class="current-user">Answering as: <strong>{{ authService.getUser()?.firstName }} {{
+                authService.getUser()?.lastName }}</strong></div>
+        <div class="modal-actions">
+            <button class="modal-btn cancel-btn" (click)="closeAddAnswerModal()">Cancel</button>
+            <button class="modal-btn save-btn" (click)="submitAnswer()">Submit</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,87 @@
+<div class="container my-4" style="max-width: 1000px">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="text-secondary">Role & Permission Management</h4>
+        <div>
+            <button class="btn btn-primary me-2" (click)="showRoleModal = true">
+                Add Role
+            </button>
+            <!-- <button class="btn btn-success" (click)="showPermissionModal = true">Add Permission</button> -->
+        </div>
+    </div>
+    <!-- Role Accordion -->
+    <div class="accordion" id="rolesAccordion">
+        <div class="accordion-item" *ngFor="let role of roles; let i = index">
+            <h2 class="accordion-header" [id]="'heading' + i">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    [attr.data-bs-target]="'#collapse' + i" aria-expanded="false">
+                    {{ role.roleName }}
+                </button>
+            </h2>
+            <div [id]="'collapse' + i" class="accordion-collapse collapse" [attr.aria-labelledby]="'heading' + i"
+                data-bs-parent="#rolesAccordion">
+                <div class="accordion-body">
+                    <!-- Permissions as Chips -->
+                    <div class="d-flex flex-wrap gap-2 mb-2">
+                        <span *ngFor="let perm of role.permissions" class="badge bg-info text-dark">{{ perm }}</span>
+                        <span *ngIf="role.permissions.length === 0" class="text-muted fst-italic">No permissions
+                            assigned</span>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-2">
+                        <button class="btn btn-sm btn-primary me-2" (click)="openAssignModal(role.roleName)">
+                            Assign Permissions
+                        </button>
+                        <button class="btn btn-sm btn-danger" (click)="deleteRole(role.roleName)">
+                            Delete Role
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="roles.length === 0" class="text-center text-muted mt-3">
+            No roles found.
+        </div>
+    </div>
+</div>
+<!-- Role Modal -->
+<c-modal [(visible)]="showRoleModal" backdrop="static">
+    <c-modal-header>
+        <h5>Create Role</h5>
+        <button class="btn-close" (click)="showRoleModal = false"></button>
+    </c-modal-header>
+    <c-modal-body>
+        <input type="text" class="form-control" [(ngModel)]="roleName" placeholder="Enter Role Name" />
+        <div *ngIf="errorMessage" class="text-danger mt-2">{{ errorMessage }}</div>
+    </c-modal-body>
+    <c-modal-footer>
+        <button class="btn btn-secondary" (click)="showRoleModal = false">
+            Cancel
+        </button>
+        <button class="btn btn-primary" [disabled]="!roleName.trim()" (click)="createRole()">
+            Create
+        </button>
+    </c-modal-footer>
+</c-modal>
+<!-- Assign Permission Modal -->
+<c-modal [(visible)]="showAssignModal" size="lg" backdrop="static">
+    <c-modal-header>
+        <h5>Assign Permissions to {{ selectedRole }}</h5>
+        <button class="btn-close" (click)="showAssignModal = false"></button>
+    </c-modal-header>
+    <c-modal-body style="max-height: 400px; overflow-y: auto">
+        <div class="form-check" *ngFor="let perm of allPermissions">
+            <input class="form-check-input" type="checkbox" [value]="perm"
+                [checked]="assignedPermissions.includes(perm)" (change)="togglePermission(perm)"
+                id="{{ 'perm-' + perm }}" />
+            <label class="form-check-label" [for]="'perm-' + perm">{{ perm }}</label>
+        </div>
+    </c-modal-body>
+    <c-modal-footer>
+        <button class="btn btn-secondary" (click)="showAssignModal = false">
+            Cancel
+        </button>
+        <button class="btn btn-primary" (click)="assignPermissions()">Save</button>
+    </c-modal-footer>
+</c-modal>

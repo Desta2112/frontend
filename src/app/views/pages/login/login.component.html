@@ -1,0 +1,122 @@
+<!-- ================= HEADER ================= -->
+<div class="header">
+  <!-- LEFT: Title -->
+  <div class="header-title">
+    Online Learning Portal
+  </div>
+
+  <!-- RIGHT: Navigation -->
+  <div>
+    <button cButton color="light" class="me-2" (click)="goHome()">Home</button>
+    <button cButton color="light" class="me-2" (click)="openLoginModal()">Sign In</button>
+    <button cButton style="background-color:#251e8d; color:white" (click)="openRegisterModal()">Sign Up</button>
+  </div>
+</div>
+
+<!-- ================= MAIN CONTENT ================= -->
+<div class="main-content">
+  <!-- HERO SECTION -->
+  <div class="hero-container">
+    <img src="assets/images/onlinestudent.png" class="hero-image animate-image" alt="Students" />
+    <div class="hero-overlay-text animate-text">Welcome to Our Website</div>
+  </div>
+
+  <!-- VISION / MISSION -->
+  <div class="hero-text text-center px-3 mt-4">
+    <h2 class="section-title">Our Vision</h2>
+    <div>The mission of the online learning portal is to provide accessible, high-quality,</div>
+    <div>and interactive education to learners of all ages and backgrounds, empowering them to acquire new skills,</div>
+    <div>enhance knowledge, and achieve personal and professional growth.</div>
+    <div>The portal is committed to leveraging technology to make learning flexible,</div>
+    <div>engaging, and tailored to individual needs.</div>
+
+
+
+    <h2 class="section-title mt-4">Our Mission</h2>
+    <div>The vision of the online learning portal is to be a global leader in digital education,</div>
+    <div>transforming the way people learn by fostering a culture of lifelong learning,</div>
+    <div>innovation, and skill development. It aspires to bridge educational gaps,</div>
+    <div>promote knowledge equity, and create opportunities for learners worldwide to succeed in a</div>
+    <div>rapidly evolving world.</div>
+  </div>
+</div>
+
+<!-- ================= LOGIN MODAL ================= -->
+<c-modal [visible]="showLoginModal" alignment="center" (visibleChange)="showLoginModal = $event">
+  <c-modal-header class="justify-content-center text-center">
+    <h5 cModalTitle>
+      <svg cIcon name="cilUser" class="me-2"></svg> Sign In
+    </h5>
+  </c-modal-header>
+  <c-modal-body>
+    <form cForm (ngSubmit)="onLogin()">
+      <p *ngIf="errorMessage" class="text-danger text-center">{{ errorMessage }}</p>
+
+      <c-input-group class="mb-3">
+        <span cInputGroupText><svg cIcon name="cilUser"></svg></span>
+        <input name="username" [(ngModel)]="username" cFormControl placeholder="Username" />
+      </c-input-group>
+
+      <c-input-group class="mb-4">
+        <span cInputGroupText><svg cIcon name="cilLockLocked"></svg></span>
+        <input type="password" name="password" [(ngModel)]="password" cFormControl placeholder="Password" />
+      </c-input-group>
+
+      <button type="submit" cButton class="w-100" style="background-color:#15c08d; color:white">
+        Login
+      </button>
+    </form>
+  </c-modal-body>
+</c-modal>
+
+<!-- ================= REGISTER MODAL ================= -->
+<c-modal [visible]="showRegisterModal" alignment="center" (visibleChange)="showRegisterModal = $event">
+  <c-modal-header class="justify-content-center text-center">
+    <h5 cModalTitle>
+      <svg cIcon name="cilUser" class="me-2"></svg> Sign Up
+    </h5>
+  </c-modal-header>
+  <c-modal-body>
+    <form (ngSubmit)="register()">
+      <input class="form-control mb-2" placeholder="Username" [(ngModel)]="registerModel.userName" name="userName"
+        required />
+      <input class="form-control mb-2" placeholder="Email" [(ngModel)]="registerModel.email" name="email" required />
+      <input class="form-control mb-2" placeholder="First Name" [(ngModel)]="registerModel.firstName" name="firstName"
+        required />
+      <input class="form-control mb-2" placeholder="Last Name" [(ngModel)]="registerModel.lastName" name="lastName"
+        required />
+      <input class="form-control mb-2" placeholder="Phone Number" [(ngModel)]="registerModel.phoneNumber"
+        name="phoneNumber" />
+      <c-input-group class="mb-4">
+        <span cInputGroupText><svg cIcon name="cilLockLocked"></svg></span>
+        <input type="password" name="password" [(ngModel)]="registerModel.password" cFormControl placeholder="Password"
+          required />
+      </c-input-group>
+
+      <c-input-group class="mb-4">
+        <span cInputGroupText><svg cIcon name="cilLockLocked"></svg></span>
+        <input type="password" name="confirmPassword" [(ngModel)]="confirmPassword" cFormControl
+          placeholder="Confirm Password" required />
+      </c-input-group>
+
+      <p *ngIf="passwordMismatch" class="text-danger text-center">Passwords do not match</p>
+
+      <button class="btn btn-success w-100">Register</button>
+    </form>
+
+    <div class="text-center mt-3">
+      <span>Already have an account?</span>
+      <a href="#" class="fw-bold ms-1" (click)="switchToLogin()">Sign In</a>
+    </div>
+  </c-modal-body>
+</c-modal>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <p>&copy; 2025 Online Learning. All rights reserved.</p>
+  <p>
+    <a href="#">Privacy Policy</a> |
+    <a href="#">Terms of Service</a> |
+    <a href="#">Contact Us</a>
+  </p>
+</footer>

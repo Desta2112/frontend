@@ -1,0 +1,36 @@
+<!-- Search Bar -->
+<div class="search-container" style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+    <input type="text" placeholder="Search by question..." [(ngModel)]="searchText" (ngModelChange)="filterAnswers()"
+        style="padding: 6px 12px; border-radius: 5px 0 0 5px; border: 1px solid #ccc; outline: none;" />
+    <button (click)="filterAnswers()"
+        style="padding: 6px 12px; border: 1px solid #4caf50; background-color: #4caf50; color: white; border-radius: 0 5px 5px 0; cursor: pointer;">
+        Search
+    </button>
+</div>
+
+<!-- Answer Cards -->
+<div class="answer-card" *ngFor="let answer of pagedAnswers; let i = index">
+    <!-- Answer Header -->
+    <div class="answer-header" (click)="toggle(i)">
+        <div class="user-info">
+            <p><strong>Question:</strong> {{ answer.descriptin }}</p>
+        </div>
+        <span class="arrow" [class.open]="openedIndex === i">▶</span>
+    </div>
+
+    <!-- Answer Body -->
+    <div class="answer-body" *ngIf="openedIndex === i">
+        <div class="avatar">{{ answer.firstName.charAt(0) }}{{ answer.lastName.charAt(0) }}</div>
+        <span class="user-name">{{ answer.firstName }} {{ answer.lastName }}</span>
+        <p><strong>Answer:</strong> {{ answer.answerText }}</p>
+    </div>
+</div>
+
+<!-- Pagination Controls -->
+<div class="pagination">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+    <button *ngFor="let page of pages" (click)="goToPage(page)" [class.active]="currentPage === page">
+        {{ page }}
+    </button>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+</div>

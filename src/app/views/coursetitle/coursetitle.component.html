@@ -1,0 +1,51 @@
+<tbody>
+    <tr *ngFor="let t of courseTitles">
+        <td>{{ t.titleName }}</td>
+        <td>
+            <table *ngIf="t.materials.length > 0; else noMaterials" class="table table-sm border">
+
+                <thead>
+                    <tr>
+                        <th>Material Name</th>
+                        <th class="text-center" style="width: 200px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let m of t.materials">
+                        <td>{{ m.fileName }}</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <button *ngIf="m.type.includes('pdf')" cButton color="info" size="sm"
+                                    (click)="openPreview(m)">
+                                    <i class="cil-file"></i>
+                                </button>
+                                <button *ngIf="m.type.includes('video')" cButton color="info" size="sm"
+                                    (click)="openPreview(m)">
+                                    <i class="cil-play-circle"></i>
+                                </button>
+                                <button *ngIf="m.type.includes('image')" cButton color="info" size="sm"
+                                    (click)="openPreview(m)">
+                                    <i class="cil-image"></i>
+                                </button>
+                                <a [href]="m.fileUrl" target="_blank" cButton color="success" size="sm">
+                                    <i class="cil-cloud-download"></i>
+                                </a>
+                                <button cButton color="danger" size="sm" (click)="deleteMaterial(t, m)">
+                                    <i class="cil-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <ng-template #noMaterials>
+                <span class="text-muted">No materials added.</span>
+            </ng-template>
+        </td>
+        <td class="text-center">
+            <button cButton color="primary" size="sm" (click)="openAddMaterialModal(t)">
+                Add Material
+            </button>
+        </td>
+    </tr>
+</tbody>

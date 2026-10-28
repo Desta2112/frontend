@@ -1,0 +1,21 @@
+.table td, .table th {
+  vertical-align: middle;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+.card {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+}
+
+.btn {
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}

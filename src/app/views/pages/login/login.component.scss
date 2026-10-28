@@ -1,0 +1,115 @@
+/* ================= GLOBAL ================= */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+/* ================= MAIN CONTENT ================= */
+.main-content {
+  padding-top: 80px;                /* space for fixed header */
+  min-height: calc(100vh - 160px);  /* space for header + footer */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ================= HERO CONTAINER ================= */
+.hero-container {
+  position: relative;
+  width: 100vw;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+/* ================= HERO IMAGE ================= */
+.hero-image {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  display: block;
+  object-fit: cover;
+  z-index: 1;
+  filter: brightness(0.75);
+  animation: floatZoom 15s ease-in-out infinite;
+}
+
+@keyframes floatZoom {
+  0%   { transform: translateY(0px) scale(1); }
+  25%  { transform: translateY(-10px) scale(1.01); }
+  50%  { transform: translateY(0px) scale(1); }
+  75%  { transform: translateY(10px) scale(1.01); }
+  100% { transform: translateY(0px) scale(1); }
+}
+
+/* ================= HERO OVERLAY TEXT ================= */
+.hero-overlay-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ff6a88;
+  font-size: 3rem;
+  font-weight: 800;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+  text-align: center;
+  opacity: 0;
+  animation: fadeFloatIn 3s ease-out forwards;
+}
+
+@keyframes fadeFloatIn {
+  0% { opacity: 0; transform: translate(-50%, -60%); }
+  50% { opacity: 0.6; transform: translate(-50%, -55%); }
+  100% { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* ================= SECTION TITLES ================= */
+.section-title {
+  color: #ff6a88;
+  font-weight: 700;
+}
+
+/* ================= HEADER ================= */
+.header {
+  background-color: #1c8681;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  color: #ffd06a;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+/* ================= FOOTER ================= */
+.footer {
+  background-color: #6b303a;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.footer a {
+  color: #796aff;
+  text-decoration: none;
+  margin: 0 0.5rem;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+.mission-text {
+  white-space: pre-line;
+}

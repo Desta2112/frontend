@@ -1,0 +1,55 @@
+<h3>Course Requests</h3>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>UserName</th>
+            <th>Course</th>
+            <th>Status</th>
+            <th>Receipt</th>
+            <th>Admin Feedback</th>
+            <!-- Actions header only for Admin -->
+            <th *ngIf="authService.getUser()?.roles.includes('Admin')">Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor="let r of requests">
+            <td>{{ r.userName }}</td>
+            <td>{{ r.courseName }}</td>
+
+            <td>
+                <span class="badge" [ngClass]="{
+          'bg-warning': r.status === 'Pending',
+          'bg-success': r.status === 'Approved',
+          'bg-danger': r.status === 'Rejected'
+        }">
+                    {{ r.status }}
+                </span>
+            </td>
+
+            <td>
+                <a *ngIf="r.receiptImageUrl" [href]="'http://localhost:5001' + r.receiptImageUrl" target="_blank">
+                    View
+                </a>
+            </td>
+
+            <td>{{ r.adminFeedback || '-' }}</td>
+
+            <!-- Actions column only visible for Admin -->
+            <td *ngIf="authService.getUser()?.roles.includes('Admin')">
+                <input class="form-control mb-2" [(ngModel)]="feedback" placeholder="Feedback (optional)" />
+
+                <button class="btn btn-success btn-sm me-2" *ngIf="authService.hasPermission('ApproveRequest')"
+                    (click)="approve(r)">
+                    Approve
+                </button>
+
+                <button class="btn btn-danger btn-sm" *ngIf="authService.hasPermission('RejectRequest')"
+                    (click)="reject(r)">
+                    Reject
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
